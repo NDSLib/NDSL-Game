@@ -1,11 +1,15 @@
 package com.ndsl.bun133.game;
 
+import com.ndsl.bun133.game.map.Map;
 import com.ndsl.bun133.game.util.TickRegister;
 import com.ndsl.bun133.logger.Logger;
 import com.ndsl.graphics.display.Display;
+import com.ndsl.graphics.display.drawable.Drawable;
 import com.ndsl.graphics.pos.Pos;
 
 import java.awt.*;
+import java.util.List;
+
 
 public class GameMain {
     /** Blockの解像度 **/
@@ -30,7 +34,6 @@ public class GameMain {
 
 //    public IKeyListener keyListener=new DefaultKeyListener(keyInput);
 
-
     public GameMain(){
         logger.debug("[GameMain]onStart");
 //        display.addDrawable(new Drawable(Blocks.TEST_BLOCK.BlockImage,new Point(100,100)));
@@ -40,5 +43,18 @@ public class GameMain {
 
     public void run(){
         tickRegister.onTick();
+    }
+
+    public drawer drawer=new drawer();
+    public class drawer{
+        private drawer(){}
+
+        public Map currentMap=null;
+        public drawer setMap(Map map){currentMap=map;return this;}
+
+        public List<Drawable> getAllDrawables(){
+            return currentMap.getAllDrawables();
+        }
+
     }
 }

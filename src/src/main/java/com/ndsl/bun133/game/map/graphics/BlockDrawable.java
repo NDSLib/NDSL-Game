@@ -8,6 +8,8 @@ import com.ndsl.graphics.pos.Rect;
 
 import java.awt.*;
 
+import static com.ndsl.bun133.game.GameMain.logger;
+
 public class BlockDrawable implements ICustomDrawable {
     public onMapBlockPos pos;
     public Map CurrentMap;
@@ -32,5 +34,6 @@ public class BlockDrawable implements ICustomDrawable {
     public void onDraw(Graphics g, Rect showingRect) {
         BlockStatus.isUpdated=false;
         BlockStatus.animator.onDraw(g);
+        logger.debug("[BlockDrawable]"+this.toString()+"is Drawing");
     }
 }

@@ -1,5 +1,6 @@
 package com.ndsl.bun133.game.map.pos;
 
+@Deprecated
 public class Point {
     public int x;
     public int y;

@@ -2,7 +2,7 @@ package com.ndsl.bun133.game.map.block.animator;
 
 import com.ndsl.bun133.game.GameMain;
 import com.ndsl.bun133.game.map.block.status.BlockStatus;
-import com.ndsl.bun133.game.map.pos.Point;
+import com.ndsl.graphics.pos.Pos;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ public class Animator {
         drawImage(g,getImage(frame_count),blockStatus.Block.pos.getLeft_UP());
     }
 
-    public void drawImage(Graphics g, Image image, Point point){
+    public void drawImage(Graphics g, Image image, Pos point){
         g.drawImage(image,point.x,point.y,null);
         GameMain.logger.debug("[Animator]onDraw:{Image Point:"+point.toString()+"}");
     }

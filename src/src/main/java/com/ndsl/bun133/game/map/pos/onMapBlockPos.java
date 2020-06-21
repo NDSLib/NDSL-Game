@@ -2,6 +2,7 @@ package com.ndsl.bun133.game.map.pos;
 
 import com.ndsl.bun133.game.GameMain;
 import com.ndsl.bun133.game.map.Map;
+import com.ndsl.graphics.pos.Pos;
 
 
 /**
@@ -21,20 +22,20 @@ public class onMapBlockPos {
         this.map=map;
     }
 
-    public Rect getRect(){
-        return new Rect(getLeft_UP(),getRight_Down());
+    public com.ndsl.graphics.pos.Rect getRect(){
+        return new com.ndsl.graphics.pos.Rect(getLeft_UP(),getRight_Down());
     }
 
-    public Point getLeft_UP(){
-        return getCenter().add(-GameMain.BLOCK_SIZE/2,-GameMain.BLOCK_SIZE/2);
+    public Pos getLeft_UP(){
+        return getCenter().shift(-GameMain.BLOCK_SIZE/2,-GameMain.BLOCK_SIZE/2);
     }
 
-    public Point getRight_Down(){
-        return getCenter().add(GameMain.BLOCK_SIZE/2,GameMain.BLOCK_SIZE/2);
+    public Pos getRight_Down(){
+        return getCenter().shift(GameMain.BLOCK_SIZE/2,GameMain.BLOCK_SIZE/2);
     }
 
-    public Point getCenter(){
-        return new Point(pos_x*GameMain.BLOCK_SIZE + map.shift_x,pos_y*GameMain.BLOCK_SIZE + map.shift_y);
+    public Pos getCenter(){
+        return new Pos(pos_x*GameMain.BLOCK_SIZE + map.shift_x,pos_y*GameMain.BLOCK_SIZE + map.shift_y);
     }
 
     public onMapBlockPos add(int shift_x, int shift_y) {

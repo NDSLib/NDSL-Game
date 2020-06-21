@@ -4,14 +4,16 @@ import com.ndsl.bun133.game.GameMain;
 import com.ndsl.bun133.game.map.block.onMapBlock;
 import com.ndsl.bun133.game.map.gen.IGenerator;
 import com.ndsl.bun133.game.map.graphics.BlockDrawable;
-import com.ndsl.bun133.game.map.pos.Rect;
 import com.ndsl.bun133.game.map.pos.onMapBlockPos;
 import com.ndsl.bun133.game.map.pos.onMapRect;
 import com.ndsl.bun133.game.register.Blocks;
 import com.ndsl.bun133.game.util.ITickEvent;
 import com.ndsl.bun133.game.util.TickRegister;
 import com.ndsl.graphics.display.Display;
+import com.ndsl.graphics.display.drawable.Drawable;
 import com.ndsl.graphics.display.key.KeyInputHandler;
+import com.ndsl.graphics.pos.Pos;
+import com.ndsl.graphics.pos.Rect;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.event.KeyEvent;
@@ -34,14 +36,18 @@ public class Map implements ITickEvent {
 
     public KeyInputHandler keyInput;
 
-    public Map(Display display, TickRegister tickRegister){
+    public String map_name;
+
+    public Map(Display display, TickRegister tickRegister,String map_name){
         this.display=display;
 //        generator.generateChunk(new ChunkPos(0,0));
         BlockMap=generator.genMap();
         this.keyInput=display.keyHandler;
         tickRegister.add(this);
+        this.map_name=map_name;
     }
 
+    @Deprecated
     public List<BlockDrawable> getAll(){
         List<BlockDrawable> drawables=new ArrayList<>();
         for(onMapBlock block:BlockMap.values()){
@@ -49,6 +55,18 @@ public class Map implements ITickEvent {
         }
         GameMain.logger.debug("[Map]BlockListSize is "+drawables.size());
         return drawables;
+    }
+
+    public List<Drawable> getAllDrawables(){
+        List<Drawable> drawables = new ArrayList<>();
+        for(BlockDrawable block:getAll()){
+            drawables.add(new Drawable(block,block.pos.getRect(),genIDForBlock(block)));
+        }
+        return drawables;
+    }
+
+    private String genIDForBlock(BlockDrawable block){
+        return "[BlockDrawable]"+map_name+":"+block.pos.pos_x+","+block.pos.pos_y;
     }
 
     public int shift_x;
@@ -59,11 +77,11 @@ public class Map implements ITickEvent {
     }
 
     public boolean isShowing(@NotNull onMapBlockPos pos, Display display) {
-        return getShowingRect(display).isContain(pos.getRect());
+        return getShowingRect(display).contain(pos.getRect());
     }
 
     public Rect getShowingRect(Display display){
-        Rect rect=new Rect(-shift_x,-shift_y,-shift_x+display.getWidth(),-shift_y+display.getHeight());
+        Rect rect=new Rect(new Pos(-shift_x,-shift_y),new Pos(-shift_x+display.getWidth(),-shift_y+display.getHeight()));
         GameMain.logger.low_level_debug("[Map]ShowingRect:"+rect.toString());
         return rect;
     }
