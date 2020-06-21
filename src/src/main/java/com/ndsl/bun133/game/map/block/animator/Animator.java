@@ -1,6 +1,5 @@
 package com.ndsl.bun133.game.map.block.animator;
 
-import com.ndsl.bun133.display.Display;
 import com.ndsl.bun133.game.GameMain;
 import com.ndsl.bun133.game.map.block.status.BlockStatus;
 import com.ndsl.bun133.game.map.pos.Point;
@@ -24,12 +23,13 @@ public class Animator {
         this.blockStatus=blockStatus;
     }
 
-    public void onDraw(Display display){
-        drawImage(display,getImage(display.passing_time),blockStatus.Block.pos.getLeft_UP());
+    public void onDraw(Graphics g){
+        onFrame();
+        drawImage(g,getImage(frame_count),blockStatus.Block.pos.getLeft_UP());
     }
 
-    public void drawImage(Display display, Image image, Point point){
-        display.getGraphics().drawImage(image,point.x,point.y,null);
+    public void drawImage(Graphics g, Image image, Point point){
+        g.drawImage(image,point.x,point.y,null);
         GameMain.logger.debug("[Animator]onDraw:{Image Point:"+point.toString()+"}");
     }
 
@@ -39,5 +39,10 @@ public class Animator {
         }else{
             return Image_List.get((int) (passed_time%Image_List.size()));
         }
+    }
+
+    public long frame_count=0;
+    public void onFrame(){
+        ++frame_count;
     }
 }

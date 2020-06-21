@@ -1,7 +1,5 @@
 package com.ndsl.bun133.game.map;
 
-import com.ndsl.bun133.display.Display;
-import com.ndsl.bun133.display.key.KeyInput;
 import com.ndsl.bun133.game.GameMain;
 import com.ndsl.bun133.game.map.block.onMapBlock;
 import com.ndsl.bun133.game.map.gen.IGenerator;
@@ -12,6 +10,8 @@ import com.ndsl.bun133.game.map.pos.onMapRect;
 import com.ndsl.bun133.game.register.Blocks;
 import com.ndsl.bun133.game.util.ITickEvent;
 import com.ndsl.bun133.game.util.TickRegister;
+import com.ndsl.graphics.display.Display;
+import com.ndsl.graphics.display.key.KeyInputHandler;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.event.KeyEvent;
@@ -32,13 +32,13 @@ public class Map implements ITickEvent {
 
     public Display display;
 
-    public KeyInput keyInput;
+    public KeyInputHandler keyInput;
 
-    public Map(Display display, KeyInput keyInput, TickRegister tickRegister){
+    public Map(Display display, TickRegister tickRegister){
         this.display=display;
 //        generator.generateChunk(new ChunkPos(0,0));
         BlockMap=generator.genMap();
-        this.keyInput=keyInput;
+        this.keyInput=display.keyHandler;
         tickRegister.add(this);
     }
 
@@ -82,19 +82,19 @@ public class Map implements ITickEvent {
     @Override
     public void onTick() {
         GameMain.logger.low_level_debug("[Map]onTick");
-        if (keyInput.getKey(KeyEvent.VK_UP)){
+        if (keyInput.isKeyPressing(KeyEvent.VK_UP)){
             GameMain.logger.low_level_debug("[Map]KeyInput:UP");
             shift_y--;
         }
-        if (keyInput.getKey(KeyEvent.VK_DOWN)){
+        if (keyInput.isKeyPressing(KeyEvent.VK_DOWN)){
             GameMain.logger.low_level_debug("[Map]KeyInput:DOWN");
             shift_y++;
         }
-        if (keyInput.getKey(KeyEvent.VK_LEFT)){
+        if (keyInput.isKeyPressing(KeyEvent.VK_LEFT)){
             GameMain.logger.low_level_debug("[Map]KeyInput:LEFT");
             shift_x--;
         }
-        if (keyInput.getKey(KeyEvent.VK_RIGHT)){
+        if (keyInput.isKeyPressing(KeyEvent.VK_RIGHT)){
             GameMain.logger.low_level_debug("[Map]KeyInput:RIGHT");
             shift_x++;
         }

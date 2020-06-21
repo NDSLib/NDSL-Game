@@ -1,10 +1,10 @@
 package com.ndsl.bun133.game.map.pos;
 
-import com.ndsl.bun133.display.pos.onDisplayRect;
 import com.ndsl.bun133.game.GameMain;
 
 import java.awt.*;
 
+@Deprecated
 public class Rect {
     public Point left_up;
     public Point right_down;
@@ -71,29 +71,30 @@ public class Rect {
     }
 
 
-    @Deprecated
-    /**
-     * @see intersects( onDisplayRect )
-     */
-    public boolean isContain(onDisplayRect rect){
+//    @Deprecated
+//    /**
+//     * @see intersects( onDisplayRect )
+//     */
+//    public boolean isContain(onDisplayRect rect){
 //        for(Point point:rect.getPoints()){
 //            if(isContain(point)) return true;
 //        }
 //        return false;
-        boolean b=intersects(rect);
-        GameMain.logger.debug(b ? "[Rect]isContain:true" : "");
-        return b;
-    }
+//        boolean b=intersects(rect);
+//        GameMain.logger.debug(b ? "[Rect]isContain:true" : "");
+//        return b;
+//    }
 
-    public boolean isOverlap(onDisplayRect rect){
-        for(Point point:getPoints()){
-            if(rect.isContain(point)) return true;
-        }
-        for(Point point:rect.getPoints()){
-            if(isContain(point)) return true;
-        }
-        return false;
-    }
+//    @Deprecated
+//    public boolean isOverlap(onDisplayRect rect){
+//        for(Point point:getPoints()){
+//            if(rect.isContain(point)) return true;
+//        }
+//        for(Point point:rect.getPoints()){
+//            if(isContain(point)) return true;
+//        }
+//        return false;
+//    }
 
     public String toString(){
         return "{Left_up:"+this.left_up.toString()+",Right_down:"+this.right_down.toString()+"}";
@@ -118,12 +119,13 @@ public class Rect {
         return false;
     }
 
-    public boolean intersects(onDisplayRect rect){
-        for(Point point:rect.getPoints()){
-            if(intersects(point)) return true;
-        }
-        return false;
-    }
+//    @Deprecated
+//    public boolean intersects(onDisplayRect rect){
+//        for(Point point:rect.getPoints()){
+//            if(intersects(point)) return true;
+//        }
+//        return false;
+//    }
 
     public boolean intersects(Point point){
         return left_up.x<=point.x && point.x<=right_down.x && left_up.y<=point.y && point.y<=right_down.y;
