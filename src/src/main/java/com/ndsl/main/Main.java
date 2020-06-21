@@ -24,6 +24,7 @@ public class Main {
             gamemain.run();
 //            GameMain.logger.println("Test");
             Thread.sleep(1);
+            gamemain.main_display.debugger.setDebug(gamemain.main_display);
             if(gamemain.main_display.limiter.onUpdate()){
                 gamemain.main_display.update();
             }
