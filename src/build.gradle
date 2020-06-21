@@ -12,7 +12,7 @@ repositories {
 }
 
 dependencies {
-    compile files('src/main/resources/graphics-1.1.2_b.jar')
+    compile files('src/main/resources/graphics-1.1.2_c.jar')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
