@@ -2,7 +2,7 @@ package com.ndsl.main;
 
 import com.ndsl.bun133.game.GameMain;
 import com.ndsl.bun133.game.map.Map;
-import com.ndsl.graphics.display.drawable.Drawable;
+import com.ndsl.graphics.display.drawable.RealTimeDrawable;
 import com.ndsl.graphics.display.scene.Scene;
 
 import static com.ndsl.bun133.game.GameMain.logger;
@@ -37,7 +37,7 @@ public class Main {
 
     public static Scene genMapScene(GameMain gamemain){
         Scene map_scene=new Scene("map_scene");
-        for(Drawable drawable:gamemain.drawer.getAllDrawables()){
+        for(RealTimeDrawable drawable:gamemain.drawer.getAllDrawables()){
             map_scene.add(drawable);
         }
         return map_scene;

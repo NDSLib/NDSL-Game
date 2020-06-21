@@ -32,11 +32,12 @@ public class BlockDrawable implements IRealTimeCustomDrawable {
     @Override
     public void onDraw(Graphics g, Rect showingRect) {
         BlockStatus.animator.onDraw(g);
-        logger.low_level_debug("[BlockDrawable]"+this.toString()+"is Drawing");
+        logger.debug("[BlockDrawable]"+this.toString()+"is Drawing");
     }
 
     @Override
     public Rect getShowingRect() {
+        logger.low_level_debug("RectGet");
         return pos.getRect();
     }
 }
