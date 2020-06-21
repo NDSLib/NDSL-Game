@@ -1,13 +1,9 @@
 package com.ndsl.bun133.game;
 
-import com.ndsl.bun133.display.Display;
-import com.ndsl.bun133.display.drawable.Drawable;
-import com.ndsl.bun133.display.key.KeyInput;
-import com.ndsl.bun133.game.map.Map;
-import com.ndsl.bun133.game.map.pos.Point;
-import com.ndsl.bun133.game.register.Blocks;
 import com.ndsl.bun133.game.util.TickRegister;
 import com.ndsl.bun133.logger.Logger;
+import com.ndsl.graphics.display.Display;
+import com.ndsl.graphics.pos.Pos;
 
 import java.awt.*;
 
@@ -26,16 +22,19 @@ public class GameMain {
     public TickRegister tickRegister=new TickRegister();
 
 
-    public Display display=new Display("Test",100,100,500,500);
+//    public Display display=new Display("Test",100,100,500,500);
+    public Display main_display=new Display("Title",3,new com.ndsl.graphics.pos.Rect(new Pos(100,100),new Pos(600,600)));
 
-    public KeyInput keyInput=new KeyInput(display);
-    public Map map=new Map(display,keyInput,tickRegister);
+//    public KeyInput keyInput=new KeyInput(display);
+//    public Map map=new Map(display,keyInput,tickRegister);
+
+//    public IKeyListener keyListener=new DefaultKeyListener(keyInput);
 
 
     public GameMain(){
         logger.debug("[GameMain]onStart");
-        display.addDrawable(new Drawable(Blocks.TEST_BLOCK.BlockImage,new Point(100,100)));
-        display.addDrawable(map.getAll().toArray(new Drawable[0]));
+//        display.addDrawable(new Drawable(Blocks.TEST_BLOCK.BlockImage,new Point(100,100)));
+//        display.addDrawable(map.getAll().toArray(new Drawable[0]));
         logger.debug("[GameMain]Init End");
     }
 

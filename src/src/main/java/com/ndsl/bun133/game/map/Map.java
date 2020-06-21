@@ -83,19 +83,19 @@ public class Map implements ITickEvent {
     public void onTick() {
         GameMain.logger.low_level_debug("[Map]onTick");
         if (keyInput.getKey(KeyEvent.VK_UP)){
-            GameMain.logger.debug("[Map]KeyInput:UP");
+            GameMain.logger.low_level_debug("[Map]KeyInput:UP");
             shift_y--;
         }
         if (keyInput.getKey(KeyEvent.VK_DOWN)){
-            GameMain.logger.debug("[Map]KeyInput:DOWN");
+            GameMain.logger.low_level_debug("[Map]KeyInput:DOWN");
             shift_y++;
         }
         if (keyInput.getKey(KeyEvent.VK_LEFT)){
-            GameMain.logger.debug("[Map]KeyInput:LEFT");
+            GameMain.logger.low_level_debug("[Map]KeyInput:LEFT");
             shift_x--;
         }
         if (keyInput.getKey(KeyEvent.VK_RIGHT)){
-            GameMain.logger.debug("[Map]KeyInput:RIGHT");
+            GameMain.logger.low_level_debug("[Map]KeyInput:RIGHT");
             shift_x++;
         }
     }
