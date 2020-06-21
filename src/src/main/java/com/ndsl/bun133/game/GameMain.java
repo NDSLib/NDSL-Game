@@ -4,7 +4,7 @@ import com.ndsl.bun133.game.map.Map;
 import com.ndsl.bun133.game.util.TickRegister;
 import com.ndsl.bun133.logger.Logger;
 import com.ndsl.graphics.display.Display;
-import com.ndsl.graphics.display.drawable.Drawable;
+import com.ndsl.graphics.display.drawable.RealTimeDrawable;
 import com.ndsl.graphics.pos.Pos;
 
 import java.awt.*;
@@ -52,7 +52,7 @@ public class GameMain {
         public Map currentMap=null;
         public drawer setMap(Map map){currentMap=map;return this;}
 
-        public List<Drawable> getAllDrawables(){
+        public List<RealTimeDrawable> getAllDrawables(){
             return currentMap.getAllDrawables();
         }
 

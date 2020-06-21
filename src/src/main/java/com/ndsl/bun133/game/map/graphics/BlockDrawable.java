@@ -3,14 +3,14 @@ package com.ndsl.bun133.game.map.graphics;
 import com.ndsl.bun133.game.map.Map;
 import com.ndsl.bun133.game.map.block.status.BlockStatus;
 import com.ndsl.bun133.game.map.pos.onMapBlockPos;
-import com.ndsl.graphics.display.drawable.ICustomDrawable;
+import com.ndsl.graphics.display.drawable.IRealTimeCustomDrawable;
 import com.ndsl.graphics.pos.Rect;
 
 import java.awt.*;
 
 import static com.ndsl.bun133.game.GameMain.logger;
 
-public class BlockDrawable implements ICustomDrawable {
+public class BlockDrawable implements IRealTimeCustomDrawable {
     public onMapBlockPos pos;
     public Map CurrentMap;
     public BlockStatus BlockStatus;
@@ -33,5 +33,10 @@ public class BlockDrawable implements ICustomDrawable {
     public void onDraw(Graphics g, Rect showingRect) {
         BlockStatus.animator.onDraw(g);
         logger.low_level_debug("[BlockDrawable]"+this.toString()+"is Drawing");
+    }
+
+    @Override
+    public Rect getShowingRect() {
+        return pos.getRect();
     }
 }

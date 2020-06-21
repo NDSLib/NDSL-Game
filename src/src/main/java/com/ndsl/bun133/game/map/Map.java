@@ -9,8 +9,8 @@ import com.ndsl.bun133.game.register.Blocks;
 import com.ndsl.bun133.game.util.ITickEvent;
 import com.ndsl.bun133.game.util.TickRegister;
 import com.ndsl.graphics.display.Display;
-import com.ndsl.graphics.display.drawable.Drawable;
 import com.ndsl.graphics.display.drawable.GUIBase;
+import com.ndsl.graphics.display.drawable.RealTimeDrawable;
 import com.ndsl.graphics.display.drawable.StringGui;
 import com.ndsl.graphics.display.key.KeyInputHandler;
 import com.ndsl.graphics.pos.Pos;
@@ -60,10 +60,10 @@ public class Map implements ITickEvent {
         return drawables;
     }
 
-    public List<Drawable> getAllDrawables(){
-        List<Drawable> drawables = new ArrayList<>();
+    public List<RealTimeDrawable> getAllDrawables(){
+        List<RealTimeDrawable> drawables = new ArrayList<>();
         for(BlockDrawable block:getAll()){
-            drawables.add(new Drawable(block,block.pos.getRect(),genIDForBlock(block)));
+            drawables.add(new RealTimeDrawable(block,genIDForBlock(block)));
         }
         return drawables;
     }
