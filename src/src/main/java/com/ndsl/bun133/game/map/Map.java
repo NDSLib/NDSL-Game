@@ -1,6 +1,5 @@
 package com.ndsl.bun133.game.map;
 
-import com.ndsl.bun133.game.GameMain;
 import com.ndsl.bun133.game.map.block.onMapBlock;
 import com.ndsl.bun133.game.map.gen.IGenerator;
 import com.ndsl.bun133.game.map.graphics.BlockDrawable;
@@ -11,6 +10,8 @@ import com.ndsl.bun133.game.util.ITickEvent;
 import com.ndsl.bun133.game.util.TickRegister;
 import com.ndsl.graphics.display.Display;
 import com.ndsl.graphics.display.drawable.Drawable;
+import com.ndsl.graphics.display.drawable.GUIBase;
+import com.ndsl.graphics.display.drawable.StringGui;
 import com.ndsl.graphics.display.key.KeyInputHandler;
 import com.ndsl.graphics.pos.Pos;
 import com.ndsl.graphics.pos.Rect;
@@ -20,6 +21,8 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import static com.ndsl.bun133.game.GameMain.logger;
 
 public class Map implements ITickEvent {
     /**
@@ -53,7 +56,7 @@ public class Map implements ITickEvent {
         for(onMapBlock block:BlockMap.values()){
             drawables.add(block.getDrawable());
         }
-        GameMain.logger.debug("[Map]BlockListSize is "+drawables.size());
+        logger.debug("[Map]BlockListSize is "+drawables.size());
         return drawables;
     }
 
@@ -82,7 +85,7 @@ public class Map implements ITickEvent {
 
     public Rect getShowingRect(Display display){
         Rect rect=new Rect(new Pos(-shift_x,-shift_y),new Pos(-shift_x+display.getWidth(),-shift_y+display.getHeight()));
-        GameMain.logger.low_level_debug("[Map]ShowingRect:"+rect.toString());
+        logger.low_level_debug("[Map]ShowingRect:"+rect.toString());
         return rect;
     }
 
@@ -99,23 +102,27 @@ public class Map implements ITickEvent {
 
     @Override
     public void onTick() {
-        GameMain.logger.low_level_debug("[Map]onTick");
-        if (keyInput.isKeyPressing(KeyEvent.VK_UP)){
-            GameMain.logger.low_level_debug("[Map]KeyInput:UP");
+        logger.low_level_debug("[Map]onTick");
+        if (keyInput.isKeyPressing(KeyEvent.VK_W)){
+            logger.low_level_debug("[Map]KeyInput:UP");
             shift_y--;
         }
-        if (keyInput.isKeyPressing(KeyEvent.VK_DOWN)){
-            GameMain.logger.low_level_debug("[Map]KeyInput:DOWN");
+        if (keyInput.isKeyPressing(KeyEvent.VK_S)){
+            logger.low_level_debug("[Map]KeyInput:DOWN");
             shift_y++;
         }
-        if (keyInput.isKeyPressing(KeyEvent.VK_LEFT)){
-            GameMain.logger.low_level_debug("[Map]KeyInput:LEFT");
+        if (keyInput.isKeyPressing(KeyEvent.VK_A)){
+            logger.low_level_debug("[Map]KeyInput:LEFT");
             shift_x--;
         }
-        if (keyInput.isKeyPressing(KeyEvent.VK_RIGHT)){
-            GameMain.logger.low_level_debug("[Map]KeyInput:RIGHT");
+        if (keyInput.isKeyPressing(KeyEvent.VK_D)){
+            logger.low_level_debug("[Map]KeyInput:RIGHT");
             shift_x++;
         }
+    }
+
+    public void setDebug(Display main_display) {
+        main_display.addGui(genDebugGUI());
     }
 
     public class generator{
@@ -141,8 +148,17 @@ public class Map implements ITickEvent {
                 block_list.put(pos,new onMapBlock(Blocks.TEST_BLOCK,pos, Map.this));
             }
 
-            GameMain.logger.debug("[MapGenerator]GeneratedMapBlocks Size is "+block_list.size());
+            logger.debug("[MapGenerator]GeneratedMapBlocks Size is "+block_list.size());
             return block_list;
         }
+    }
+
+    public GUIBase genDebugGUI(){
+        return new GUIBase(new StringGui(this.toString()),new Pos(10,320),"Map_Debug");
+    }
+
+    @Override
+    public String toString() {
+        return "MapName:"+this.map_name+"\n"+"Shift_x:"+shift_x+"\n"+"Shift_y:"+shift_y;
     }
 }

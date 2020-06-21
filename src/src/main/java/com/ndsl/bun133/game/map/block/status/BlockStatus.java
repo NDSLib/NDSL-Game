@@ -4,7 +4,6 @@ import com.ndsl.bun133.game.map.block.animator.Animator;
 import com.ndsl.bun133.game.map.block.onMapBlock;
 
 public class BlockStatus {
-    public boolean isUpdated=true;
     public onMapBlock Block;
 
     public BlockStatus(onMapBlock block){
@@ -12,9 +11,6 @@ public class BlockStatus {
         this.animator=new Animator(block.block.BlockImage,this);
     }
 
-    public void onUpdate(){
-        isUpdated=true;
-    }
 
     public NBT nbt=new NBT();
 

@@ -18,7 +18,6 @@ public class BlockDrawable implements ICustomDrawable {
 
     public BlockDrawable(Image image, onMapBlockPos pos, Map map, BlockStatus status){
         super();
-//        super(status.animator.getImage(),pos.getLeft_UP());
         this.pos=pos;
         this.BlockStatus=status;
         this.CurrentMap=map;
@@ -32,8 +31,7 @@ public class BlockDrawable implements ICustomDrawable {
 
     @Override
     public void onDraw(Graphics g, Rect showingRect) {
-        BlockStatus.isUpdated=false;
         BlockStatus.animator.onDraw(g);
-        logger.debug("[BlockDrawable]"+this.toString()+"is Drawing");
+        logger.println("[BlockDrawable]"+this.toString()+"is Drawing");
     }
 }
