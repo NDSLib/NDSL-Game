@@ -1,7 +1,7 @@
-package com.ndsl.bun133.game.map.chunk.block.status;
+package com.ndsl.bun133.game.map.block.status;
 
-import com.ndsl.bun133.game.map.chunk.block.animator.Animator;
-import com.ndsl.bun133.game.map.chunk.block.onMapBlock;
+import com.ndsl.bun133.game.map.block.animator.Animator;
+import com.ndsl.bun133.game.map.block.onMapBlock;
 
 public class BlockStatus {
     public boolean isUpdated=true;

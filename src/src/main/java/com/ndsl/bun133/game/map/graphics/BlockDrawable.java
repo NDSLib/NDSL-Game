@@ -5,7 +5,7 @@ import com.ndsl.bun133.display.drawable.Drawable;
 import com.ndsl.bun133.display.drawable.DrawableType;
 import com.ndsl.bun133.game.GameMain;
 import com.ndsl.bun133.game.map.Map;
-import com.ndsl.bun133.game.map.chunk.block.status.BlockStatus;
+import com.ndsl.bun133.game.map.block.status.BlockStatus;
 import com.ndsl.bun133.game.map.pos.onMapBlockPos;
 
 import java.awt.*;

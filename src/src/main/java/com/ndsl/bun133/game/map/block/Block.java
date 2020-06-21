@@ -1,4 +1,4 @@
-package com.ndsl.bun133.game.map.chunk.block;
+package com.ndsl.bun133.game.map.block;
 
 import java.awt.*;
 

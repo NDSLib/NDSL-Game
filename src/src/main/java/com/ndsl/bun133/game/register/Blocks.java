@@ -1,6 +1,6 @@
 package com.ndsl.bun133.game.register;
 
-import com.ndsl.bun133.game.map.chunk.block.Block;
+import com.ndsl.bun133.game.map.block.Block;
 import com.ndsl.bun133.util.FileMaster;
 
 public class Blocks {

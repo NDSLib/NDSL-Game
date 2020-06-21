@@ -3,7 +3,7 @@ package com.ndsl.bun133.game.map;
 import com.ndsl.bun133.display.Display;
 import com.ndsl.bun133.display.key.KeyInput;
 import com.ndsl.bun133.game.GameMain;
-import com.ndsl.bun133.game.map.chunk.block.onMapBlock;
+import com.ndsl.bun133.game.map.block.onMapBlock;
 import com.ndsl.bun133.game.map.gen.IGenerator;
 import com.ndsl.bun133.game.map.graphics.BlockDrawable;
 import com.ndsl.bun133.game.map.pos.Rect;

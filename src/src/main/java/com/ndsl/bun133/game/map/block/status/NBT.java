@@ -1,4 +1,4 @@
-package com.ndsl.bun133.game.map.chunk.block.status;
+package com.ndsl.bun133.game.map.block.status;
 
 import com.ndsl.bun133.game.GameMain;
 

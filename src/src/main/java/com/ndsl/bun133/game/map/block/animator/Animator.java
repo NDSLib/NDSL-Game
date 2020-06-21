@@ -1,8 +1,8 @@
-package com.ndsl.bun133.game.map.chunk.block.animator;
+package com.ndsl.bun133.game.map.block.animator;
 
 import com.ndsl.bun133.display.Display;
 import com.ndsl.bun133.game.GameMain;
-import com.ndsl.bun133.game.map.chunk.block.status.BlockStatus;
+import com.ndsl.bun133.game.map.block.status.BlockStatus;
 import com.ndsl.bun133.game.map.pos.Point;
 
 import java.awt.*;
