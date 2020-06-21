@@ -30,7 +30,7 @@ public class Animator {
 
     public void drawImage(Graphics g, Image image, Pos point){
         g.drawImage(image,point.x,point.y,null);
-        GameMain.logger.debug("[Animator]onDraw:{Image Point:"+point.toString()+"}");
+        GameMain.logger.low_level_debug("[Animator]onDraw:{Image Point:"+point.toString()+"}");
     }
 
     public Image getImage(long passed_time) {

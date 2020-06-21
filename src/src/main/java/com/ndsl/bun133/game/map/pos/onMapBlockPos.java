@@ -35,7 +35,8 @@ public class onMapBlockPos {
     }
 
     public Pos getCenter(){
-        return new Pos(pos_x*GameMain.BLOCK_SIZE + map.shift_x,pos_y*GameMain.BLOCK_SIZE + map.shift_y);
+//        return new Pos(pos_x,pos_y);
+        return new Pos((pos_x*GameMain.BLOCK_SIZE + map.shift_x),(pos_y*GameMain.BLOCK_SIZE + map.shift_y));
     }
 
     public onMapBlockPos add(int shift_x, int shift_y) {

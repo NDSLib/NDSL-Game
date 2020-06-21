@@ -32,6 +32,6 @@ public class BlockDrawable implements ICustomDrawable {
     @Override
     public void onDraw(Graphics g, Rect showingRect) {
         BlockStatus.animator.onDraw(g);
-        logger.println("[BlockDrawable]"+this.toString()+"is Drawing");
+        logger.low_level_debug("[BlockDrawable]"+this.toString()+"is Drawing");
     }
 }
