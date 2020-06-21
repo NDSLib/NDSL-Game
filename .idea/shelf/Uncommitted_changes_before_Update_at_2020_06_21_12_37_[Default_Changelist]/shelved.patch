@@ -1,0 +1,557 @@
+Index: src/build.gradle
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>plugins {\r\n    id 'java'\r\n    id 'org.jetbrains.kotlin.jvm' version '1.3.72'\r\n}\r\n\r\nversion 'unspecified'\r\n\r\nsourceCompatibility = 1.8\r\n\r\nrepositories {\r\n    mavenCentral()\r\n}\r\n\r\ndependencies {\r\n    implementation \"org.jetbrains.kotlin:kotlin-stdlib-jdk8\"\r\n    testCompile group: 'junit', name: 'junit', version: '4.12'\r\n}\r\n\r\ncompileKotlin {\r\n    kotlinOptions.jvmTarget = \"1.8\"\r\n}\r\ncompileTestKotlin {\r\n    kotlinOptions.jvmTarget = \"1.8\"\r\n}\r\ntasks.withType(Jar) {compileJava.options.encoding = 'UTF-8'}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/build.gradle	(revision 3cc305fa402d97b47502c3cbcef9d688b86b6793)
++++ src/build.gradle	(date 1592710401080)
+@@ -12,6 +12,7 @@
+ }
+ 
+ dependencies {
++    compile files('src/main/resources/graphics-1.0.jar')
+     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+     testCompile group: 'junit', name: 'junit', version: '4.12'
+ }
+Index: src/src/main/java/com/ndsl/main/Main.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.ndsl.main;\r\n\r\nimport com.ndsl.bun133.game.GameMain;\r\n\r\npublic class Main {\r\n    @SuppressWarnings(\"InfiniteLoopStatement\")\r\n    public static void main(String[] args) throws InterruptedException {\r\n        GameMain gamemain = new GameMain();\r\n        while (true) {\r\n            gamemain.run();\r\n//            GameMain.logger.println(\"Test\");\r\n            Thread.sleep(1);\r\n            gamemain.display.update();\r\n        }\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/src/main/java/com/ndsl/main/Main.java	(revision 3cc305fa402d97b47502c3cbcef9d688b86b6793)
++++ src/src/main/java/com/ndsl/main/Main.java	(date 1592709567831)
+@@ -10,7 +10,8 @@
+             gamemain.run();
+ //            GameMain.logger.println("Test");
+             Thread.sleep(1);
+-            gamemain.display.update();
++            if(gamemain.main_display.limiter.onUpdate()) gamemain.main_display.update();
++//            gamemain.display.update();
+         }
+     }
+ }
+Index: src/src/main/java/com/ndsl/bun133/util/MultiSet.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.ndsl.bun133.util;\r\n\r\npublic class MultiSet<T,S> {\r\n    public T t_value=null;\r\n    public S s_value=null;\r\n\r\n    public MultiSet(T t,S s){\r\n        this.t_value=t;\r\n        this.s_value=s;\r\n    }\r\n\r\n    public S getS_value() {\r\n        return s_value;\r\n    }\r\n\r\n    public T getT_value() {\r\n        return t_value;\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/src/main/java/com/ndsl/bun133/util/MultiSet.java	(revision 3cc305fa402d97b47502c3cbcef9d688b86b6793)
++++ src/src/main/java/com/ndsl/bun133/util/MultiSet.java	(date 1592661375282)
+@@ -1,5 +1,7 @@
+ package com.ndsl.bun133.util;
+ 
++import com.ndsl.bun133.game.GameMain;
++
+ public class MultiSet<T,S> {
+     public T t_value=null;
+     public S s_value=null;
+@@ -16,4 +18,20 @@
+     public T getT_value() {
+         return t_value;
+     }
++
++    @Override
++    public boolean equals(Object obj) {
++        if(obj instanceof MultiSet<?,?>){
++            MultiSet<?,?> set=(MultiSet<?, ?>) obj;
++            return set.t_value==t_value&&set.s_value==s_value;
++        }else{
++            GameMain.logger.warn("[MultiSet]Object not Mapped to MultiSet");
++            return false;
++        }
++    }
++
++    @Override
++    public String toString() {
++        return "{T:{"+t_value.toString()+"},S:{"+s_value.toString()+"}}";
++    }
+ }
+Index: src/src/main/java/com/ndsl/bun133/display/key/KeyInput.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.ndsl.bun133.display.key;\r\n\r\nimport com.ndsl.bun133.display.Display;\r\nimport com.ndsl.bun133.game.GameMain;\r\nimport com.ndsl.bun133.util.MultiSet;\r\n\r\nimport java.awt.event.KeyEvent;\r\nimport java.util.ArrayList;\r\nimport java.util.HashMap;\r\nimport java.util.List;\r\nimport java.util.Map;\r\n\r\npublic class KeyInput implements java.awt.event.KeyListener {\r\n    public Map<MultiSet<Integer, Character>, Boolean> KeyBool=new HashMap<>();\r\n    public KeyInput(Display display){\r\n        display.addKeyListener(this);\r\n    }\r\n\r\n    @Override\r\n    public void keyTyped(KeyEvent e) {\r\n        KeyBool.put(new MultiSet<Integer, Character>(e.getKeyCode(),e.getKeyChar()),true);\r\n        onKey(e.getKeyCode(),e.getKeyChar(),true);\r\n    }\r\n\r\n    private void onKey(int keyCode, char keyChar,boolean isPushed) {\r\n        GameMain.logger.debug(isPushed ? \"[KeyInput]Key: \"+keyChar+\"(\"+keyCode+\")\"+\" isPushing\" : \"[KeyInput]Key: \"+keyChar+\"(\"+keyCode+\")\"+\" is Not Pushing\");\r\n    }\r\n\r\n    @Override\r\n    public void keyPressed(KeyEvent e) {\r\n        KeyBool.put(new MultiSet<Integer, Character>(e.getKeyCode(),e.getKeyChar()),true);\r\n        onKey(e.getKeyCode(),e.getKeyChar(),true);\r\n    }\r\n\r\n    @Override\r\n    public void keyReleased(KeyEvent e) {\r\n        KeyBool.put(new MultiSet<Integer, Character>(e.getKeyCode(),e.getKeyChar()),false);\r\n        onKey(e.getKeyCode(),e.getKeyChar(),false);\r\n    }\r\n\r\n    public boolean getKey(int keycode){\r\n        for(Map.Entry<MultiSet<Integer, Character>, Boolean> entry:KeyBool.entrySet()){\r\n            if(entry.getKey().t_value==keycode){\r\n                return entry.getValue();\r\n            }\r\n        }\r\n        GameMain.logger.low_level_debug(\"[KeyInput]NotFoundKey:\"+keycode);\r\n        return false;\r\n    }\r\n\r\n//    public Set<MultiSet<Integer,Character>> getAll(){\r\n//        return KeyBool.keySet();\r\n//    }\r\n\r\n    public List<MultiSet<Integer, Character>> getAll(){\r\n        return new ArrayList<>(KeyBool.keySet());\r\n    }\r\n\r\n    public List<MultiSet<Integer, Character>> getActiveAll(){\r\n        List<MultiSet<Integer, Character>> list = new ArrayList<>();\r\n        for(Map.Entry<MultiSet<Integer, Character>, Boolean> set:KeyBool.entrySet()){\r\n            if(set.getValue().booleanValue()){\r\n                list.add(set.getKey());\r\n            }\r\n        }\r\n        return list;\r\n    }\r\n\r\n\r\n    /**\r\n     * below is register\r\n     */\r\n\r\n    public List<IKeyListener> keyListeners=new ArrayList<>();\r\n\r\n    public void addKeyListener(IKeyListener listener){\r\n        keyListeners.add(listener);\r\n    }\r\n\r\n    public void onKey_Register(char key_char,int key_code,boolean isPushing){\r\n\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/src/main/java/com/ndsl/bun133/display/key/KeyInput.java	(revision 3cc305fa402d97b47502c3cbcef9d688b86b6793)
++++ src/src/main/java/com/ndsl/bun133/display/key/KeyInput.java	(date 1592661375186)
+@@ -2,28 +2,28 @@
+ 
+ import com.ndsl.bun133.display.Display;
+ import com.ndsl.bun133.game.GameMain;
++import com.ndsl.bun133.util.EqualMap;
+ import com.ndsl.bun133.util.MultiSet;
+ 
+ import java.awt.event.KeyEvent;
+ import java.util.ArrayList;
+-import java.util.HashMap;
+ import java.util.List;
+-import java.util.Map;
+ 
+ public class KeyInput implements java.awt.event.KeyListener {
+-    public Map<MultiSet<Integer, Character>, Boolean> KeyBool=new HashMap<>();
++    public EqualMap<MultiSet<Integer, Character>, Boolean> KeyBool=new EqualMap<>();
+     public KeyInput(Display display){
+         display.addKeyListener(this);
+     }
+ 
+     @Override
+     public void keyTyped(KeyEvent e) {
+-        KeyBool.put(new MultiSet<Integer, Character>(e.getKeyCode(),e.getKeyChar()),true);
+-        onKey(e.getKeyCode(),e.getKeyChar(),true);
++//        KeyBool.put(new MultiSet<Integer, Character>(e.getKeyCode(),e.getKeyChar()),true);
++//        onKey(e.getKeyCode(),e.getKeyChar(),true);
+     }
+ 
+     private void onKey(int keyCode, char keyChar,boolean isPushed) {
+-        GameMain.logger.debug(isPushed ? "[KeyInput]Key: "+keyChar+"("+keyCode+")"+" isPushing" : "[KeyInput]Key: "+keyChar+"("+keyCode+")"+" is Not Pushing");
++        GameMain.logger.debug(isPushed ? "[KeyInput]Key: "+keyChar+"("+keyCode+")"+" is Pushing" : "[KeyInput]Key: "+keyChar+"("+keyCode+")"+" is Not Pushing");
++        this.onKey_Register(keyChar,keyCode,isPushed);
+     }
+ 
+     @Override
+@@ -34,14 +34,15 @@
+ 
+     @Override
+     public void keyReleased(KeyEvent e) {
++        if(!KeyBool.containsKey(new MultiSet<Integer, Character>(e.getKeyCode(),e.getKeyChar()))) GameMain.logger.error("[KeyInput]Nothing Match for Map Binding");
+         KeyBool.put(new MultiSet<Integer, Character>(e.getKeyCode(),e.getKeyChar()),false);
+         onKey(e.getKeyCode(),e.getKeyChar(),false);
+     }
+ 
+     public boolean getKey(int keycode){
+-        for(Map.Entry<MultiSet<Integer, Character>, Boolean> entry:KeyBool.entrySet()){
+-            if(entry.getKey().t_value==keycode){
+-                return entry.getValue();
++        for(MultiSet<MultiSet<Integer,Character>,Boolean> entry:KeyBool.getValues()){
++            if(entry.t_value.t_value==keycode){
++                return entry.s_value;
+             }
+         }
+         GameMain.logger.low_level_debug("[KeyInput]NotFoundKey:"+keycode);
+@@ -52,15 +53,15 @@
+ //        return KeyBool.keySet();
+ //    }
+ 
+-    public List<MultiSet<Integer, Character>> getAll(){
+-        return new ArrayList<>(KeyBool.keySet());
++    public List<MultiSet<MultiSet<Integer, Character>,Boolean>> getAll(){
++        return new ArrayList<MultiSet<MultiSet<Integer,Character>,Boolean>>(KeyBool.keySet());
+     }
+ 
+-    public List<MultiSet<Integer, Character>> getActiveAll(){
+-        List<MultiSet<Integer, Character>> list = new ArrayList<>();
+-        for(Map.Entry<MultiSet<Integer, Character>, Boolean> set:KeyBool.entrySet()){
+-            if(set.getValue().booleanValue()){
+-                list.add(set.getKey());
++    public List<MultiSet<MultiSet<Integer, Character>,Boolean>> getActiveAll(){
++        List<MultiSet<MultiSet<Integer, Character>,Boolean>> list = new ArrayList<>();
++        for(MultiSet<MultiSet<Integer,Character>,Boolean> entry:KeyBool.getValues()){
++            if(entry.s_value){
++                list.add(entry);
+             }
+         }
+         return list;
+@@ -78,6 +79,8 @@
+     }
+ 
+     public void onKey_Register(char key_char,int key_code,boolean isPushing){
+-
++        for(IKeyListener keyListener:keyListeners){
++            keyListener.onKey(key_char,key_code,isPushing);
++        }
+     }
+ }
+Index: src/src/main/java/com/ndsl/bun133/game/GameMain.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.ndsl.bun133.game;\r\n\r\nimport com.ndsl.bun133.display.Display;\r\nimport com.ndsl.bun133.display.drawable.Drawable;\r\nimport com.ndsl.bun133.display.key.KeyInput;\r\nimport com.ndsl.bun133.game.map.Map;\r\nimport com.ndsl.bun133.game.map.pos.Point;\r\nimport com.ndsl.bun133.game.register.Blocks;\r\nimport com.ndsl.bun133.game.util.TickRegister;\r\nimport com.ndsl.bun133.logger.Logger;\r\n\r\nimport java.awt.*;\r\n\r\npublic class GameMain {\r\n    /** Blockの解像度 **/\r\n    public static final int BLOCK_SIZE=64;\r\n    /** 1チャンクの1辺のブロック数 **/\r\n    public static final int CHUNK_SIZE=255;\r\n    public static final int CHUNK_SIZE_HALF=128;\r\n    public static final Logger logger=new Logger(true,false);\r\n\r\n    public static final boolean Drawable_Debug=true;\r\n    public static final Color Debug_Color=new Color(255,0, 215);\r\n\r\n\r\n    public TickRegister tickRegister=new TickRegister();\r\n\r\n\r\n    public Display display=new Display(\"Test\",100,100,500,500);\r\n\r\n    public KeyInput keyInput=new KeyInput(display);\r\n    public Map map=new Map(display,keyInput,tickRegister);\r\n\r\n\r\n    public GameMain(){\r\n        logger.debug(\"[GameMain]onStart\");\r\n        display.addDrawable(new Drawable(Blocks.TEST_BLOCK.BlockImage,new Point(100,100)));\r\n        display.addDrawable(map.getAll().toArray(new Drawable[0]));\r\n        logger.debug(\"[GameMain]Init End\");\r\n    }\r\n\r\n    public void run(){\r\n        tickRegister.onTick();\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/src/main/java/com/ndsl/bun133/game/GameMain.java	(revision 3cc305fa402d97b47502c3cbcef9d688b86b6793)
++++ src/src/main/java/com/ndsl/bun133/game/GameMain.java	(date 1592702187089)
+@@ -1,13 +1,16 @@
+ package com.ndsl.bun133.game;
+ 
+-import com.ndsl.bun133.display.Display;
+ import com.ndsl.bun133.display.drawable.Drawable;
++import com.ndsl.bun133.display.key.IKeyListener;
+ import com.ndsl.bun133.display.key.KeyInput;
+ import com.ndsl.bun133.game.map.Map;
+ import com.ndsl.bun133.game.map.pos.Point;
+ import com.ndsl.bun133.game.register.Blocks;
+ import com.ndsl.bun133.game.util.TickRegister;
++import com.ndsl.bun133.game.util.key.DefaultKeyListener;
+ import com.ndsl.bun133.logger.Logger;
++import com.ndsl.graphics.display.Display;
++import com.ndsl.graphics.pos.Pos;
+ 
+ import java.awt.*;
+ 
+@@ -26,16 +29,19 @@
+     public TickRegister tickRegister=new TickRegister();
+ 
+ 
+-    public Display display=new Display("Test",100,100,500,500);
++//    public Display display=new Display("Test",100,100,500,500);
++    public Display main_display=new Display("Title",3,new com.ndsl.graphics.pos.Rect(new Pos(100,100),new Pos(600,600)));
+ 
+-    public KeyInput keyInput=new KeyInput(display);
+-    public Map map=new Map(display,keyInput,tickRegister);
++//    public KeyInput keyInput=new KeyInput(display);
++//    public Map map=new Map(display,keyInput,tickRegister);
++
++//    public IKeyListener keyListener=new DefaultKeyListener(keyInput);
+ 
+ 
+     public GameMain(){
+         logger.debug("[GameMain]onStart");
+-        display.addDrawable(new Drawable(Blocks.TEST_BLOCK.BlockImage,new Point(100,100)));
+-        display.addDrawable(map.getAll().toArray(new Drawable[0]));
++//        display.addDrawable(new Drawable(Blocks.TEST_BLOCK.BlockImage,new Point(100,100)));
++//        display.addDrawable(map.getAll().toArray(new Drawable[0]));
+         logger.debug("[GameMain]Init End");
+     }
+ 
+Index: .idea/gradle.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"GradleSettings\">\r\n    <option name=\"linkedExternalProjectsSettings\">\r\n      <GradleProjectSettings>\r\n        <option name=\"distributionType\" value=\"DEFAULT_WRAPPED\" />\r\n        <option name=\"externalProjectPath\" value=\"$PROJECT_DIR$\" />\r\n        <option name=\"gradleJvm\" value=\"11\" />\r\n        <option name=\"modules\">\r\n          <set>\r\n            <option value=\"$PROJECT_DIR$\" />\r\n            <option value=\"$PROJECT_DIR$/src\" />\r\n          </set>\r\n        </option>\r\n        <option name=\"useQualifiedModuleNames\" value=\"true\" />\r\n      </GradleProjectSettings>\r\n    </option>\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/gradle.xml	(revision 3cc305fa402d97b47502c3cbcef9d688b86b6793)
++++ .idea/gradle.xml	(date 1591743065425)
+@@ -1,5 +1,6 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
++  <component name="GradleMigrationSettings" migrationVersion="1" />
+   <component name="GradleSettings">
+     <option name="linkedExternalProjectsSettings">
+       <GradleProjectSettings>
+Index: .idea/compiler.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/compiler.xml	(date 1592662030047)
++++ .idea/compiler.xml	(date 1592662030047)
+@@ -0,0 +1,8 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="CompilerConfiguration">
++    <bytecodeTargetLevel target="1.8">
++      <module name="maven" target="1.5" />
++    </bytecodeTargetLevel>
++  </component>
++</project>
+\ No newline at end of file
+Index: .idea/libraries/graphics_1_0.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/libraries/graphics_1_0.xml	(date 1592709264263)
++++ .idea/libraries/graphics_1_0.xml	(date 1592709264263)
+@@ -0,0 +1,9 @@
++<component name="libraryTable">
++  <library name="graphics-1.0">
++    <CLASSES>
++      <root url="jar://$PROJECT_DIR$/src/src/main/resources/graphics-1.0.jar!/" />
++    </CLASSES>
++    <JAVADOC />
++    <SOURCES />
++  </library>
++</component>
+\ No newline at end of file
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"ExternalStorageConfigurationManager\" enabled=\"true\" />\r\n  <component name=\"ProjectRootManager\" version=\"2\" languageLevel=\"JDK_11\" project-jdk-name=\"11\" project-jdk-type=\"JavaSDK\" />\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/misc.xml	(revision 3cc305fa402d97b47502c3cbcef9d688b86b6793)
++++ .idea/misc.xml	(date 1592710536066)
+@@ -1,5 +1,5 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+   <component name="ExternalStorageConfigurationManager" enabled="true" />
+-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="11" project-jdk-type="JavaSDK" />
++  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="false" project-jdk-name="12" project-jdk-type="JavaSDK" />
+ </project>
+\ No newline at end of file
+Index: .idea/jarRepositories.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"RemoteRepositoriesConfiguration\">\r\n    <remote-repository>\r\n      <option name=\"id\" value=\"central\" />\r\n      <option name=\"name\" value=\"Maven Central repository\" />\r\n      <option name=\"url\" value=\"https://repo1.maven.org/maven2\" />\r\n    </remote-repository>\r\n    <remote-repository>\r\n      <option name=\"id\" value=\"jboss.community\" />\r\n      <option name=\"name\" value=\"JBoss Community repository\" />\r\n      <option name=\"url\" value=\"https://repository.jboss.org/nexus/content/repositories/public/\" />\r\n    </remote-repository>\r\n    <remote-repository>\r\n      <option name=\"id\" value=\"MavenRepo\" />\r\n      <option name=\"name\" value=\"MavenRepo\" />\r\n      <option name=\"url\" value=\"https://repo.maven.apache.org/maven2/\" />\r\n    </remote-repository>\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/jarRepositories.xml	(revision 3cc305fa402d97b47502c3cbcef9d688b86b6793)
++++ .idea/jarRepositories.xml	(date 1592661900423)
+@@ -3,18 +3,23 @@
+   <component name="RemoteRepositoriesConfiguration">
+     <remote-repository>
+       <option name="id" value="central" />
+-      <option name="name" value="Maven Central repository" />
+-      <option name="url" value="https://repo1.maven.org/maven2" />
++      <option name="name" value="Central Repository" />
++      <option name="url" value="https://repo.maven.apache.org/maven2" />
+     </remote-repository>
+     <remote-repository>
+-      <option name="id" value="jboss.community" />
+-      <option name="name" value="JBoss Community repository" />
+-      <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
++      <option name="id" value="central" />
++      <option name="name" value="Maven Central repository" />
++      <option name="url" value="https://repo1.maven.org/maven2" />
+     </remote-repository>
+     <remote-repository>
+       <option name="id" value="MavenRepo" />
+       <option name="name" value="MavenRepo" />
+       <option name="url" value="https://repo.maven.apache.org/maven2/" />
++    </remote-repository>
++    <remote-repository>
++      <option name="id" value="jboss.community" />
++      <option name="name" value="JBoss Community repository" />
++      <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
+     </remote-repository>
+   </component>
+ </project>
+\ No newline at end of file
+Index: src/src/main/java/com/ndsl/bun133/game/util/key/DefaultKeyListener.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/src/main/java/com/ndsl/bun133/game/util/key/DefaultKeyListener.java	(date 1591745258273)
++++ src/src/main/java/com/ndsl/bun133/game/util/key/DefaultKeyListener.java	(date 1591745258273)
+@@ -0,0 +1,26 @@
++package com.ndsl.bun133.game.util.key;
++
++import com.ndsl.bun133.display.key.IKeyListener;
++import com.ndsl.bun133.display.key.KeyInput;
++import com.ndsl.bun133.game.GameMain;
++
++import java.awt.event.KeyEvent;
++
++public class DefaultKeyListener implements IKeyListener {
++    public KeyInput keyInput;
++    public DefaultKeyListener(KeyInput keyInput){
++        this.keyInput=keyInput;
++        keyInput.addKeyListener(this);
++    }
++
++    @Override
++    public void onKey(char key_char, int key_code, boolean isPushing) {
++        if(isPushing){
++            switch (key_code){
++                case KeyEvent
++                        .VK_W:
++                    GameMain.logger.debug("[DefaultKeyListener]NowPressingKey:"+keyInput.getActiveAll());
++            }
++        }
++    }
++}
+Index: src/src/main/java/com/ndsl/bun133/util/EqualMap.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/src/main/java/com/ndsl/bun133/util/EqualMap.java	(date 1591750531498)
++++ src/src/main/java/com/ndsl/bun133/util/EqualMap.java	(date 1591750531498)
+@@ -0,0 +1,134 @@
++package com.ndsl.bun133.util;
++
++import com.ndsl.bun133.game.GameMain;
++import org.jetbrains.annotations.NotNull;
++import org.jetbrains.annotations.Nullable;
++
++import java.util.ArrayList;
++import java.util.Collection;
++import java.util.Iterator;
++import java.util.List;
++
++public class EqualMap<T,S> {
++    public EqualMap(){
++    }
++
++    public List<MultiSet<T,S>> t_s_list=new ArrayList<>();
++
++    public void put(T t_value,S s_value){
++        if(containsKey(t_value)){
++            t_s_list.remove(new MultiSet<T,S>(t_value,get(t_value)));
++        }
++        t_s_list.add(new MultiSet<T,S>(t_value,s_value));
++    }
++
++    @Nullable
++    public S get(T key){
++        for(MultiSet<T,S> set:t_s_list){
++            if(set.t_value.equals(key)){
++                return set.s_value;
++            }
++        }
++        GameMain.logger.warn("[EqualMap]NotFoundKey");
++        return null;
++    }
++
++    @NotNull
++    public S getOrDefault(T key,S Default_Value){
++        S result=get(key);
++        if(result==null){
++            return Default_Value;
++        }else{
++            return result;
++        }
++    }
++
++    public void remove(@NotNull T key){
++        t_s_list.remove(new MultiSet<T,S>(key,get(key)));
++    }
++
++    @NotNull
++    public List<MultiSet<T,S>> getValues(){
++        return t_s_list;
++    }
++
++
++    public boolean containsKey(T key){
++        return get(key)!=null;
++    }
++
++    /**
++     * @apiNote DO NOT CHANGE STATE!!!
++     */
++    public Collection<MultiSet<T,S>> keySet(){
++        return new Collection<MultiSet<T, S>>() {
++            @Override
++            public int size() {
++                return t_s_list.size();
++            }
++
++            @Override
++            public boolean isEmpty() {
++                return t_s_list.isEmpty();
++            }
++
++            @Override
++            public boolean contains(Object o) {
++                return t_s_list.contains(o);
++            }
++
++            @NotNull
++            @Override
++            public Iterator<MultiSet<T, S>> iterator() {
++                return t_s_list.iterator();
++            }
++
++            @NotNull
++            @Override
++            public Object[] toArray() {
++                return t_s_list.toArray();
++            }
++
++            @NotNull
++            @Override
++            public <T> T[] toArray(@NotNull T[] a) {
++                return t_s_list.toArray(a);
++            }
++
++            @Override
++            public boolean add(MultiSet<T, S> tsMultiSet) {
++                return t_s_list.add(tsMultiSet);
++            }
++
++            @Override
++            public boolean remove(Object o) {
++                return t_s_list.remove(o);
++            }
++
++            @Override
++            public boolean containsAll(@NotNull Collection<?> c) {
++                return t_s_list.containsAll(c);
++            }
++
++            @Override
++            public boolean addAll(@NotNull Collection<? extends MultiSet<T, S>> c) {
++                return t_s_list.addAll(c);
++            }
++
++            @Override
++            public boolean removeAll(@NotNull Collection<?> c) {
++                return t_s_list.removeAll(c);
++            }
++
++            @Override
++            public boolean retainAll(@NotNull Collection<?> c) {
++                return t_s_list.retainAll(c);
++            }
++
++            @Override
++            public void clear() {
++                t_s_list.clear();
++            }
++        };
++    }
++}
+Index: src/src/main/java/com/ndsl/bun133/game/map/Map.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.ndsl.bun133.game.map;\r\n\r\nimport com.ndsl.bun133.display.Display;\r\nimport com.ndsl.bun133.display.key.KeyInput;\r\nimport com.ndsl.bun133.game.GameMain;\r\nimport com.ndsl.bun133.game.map.chunk.block.onMapBlock;\r\nimport com.ndsl.bun133.game.map.gen.IGenerator;\r\nimport com.ndsl.bun133.game.map.graphics.BlockDrawable;\r\nimport com.ndsl.bun133.game.map.pos.Rect;\r\nimport com.ndsl.bun133.game.map.pos.onMapBlockPos;\r\nimport com.ndsl.bun133.game.map.pos.onMapRect;\r\nimport com.ndsl.bun133.game.register.Blocks;\r\nimport com.ndsl.bun133.game.util.ITickEvent;\r\nimport com.ndsl.bun133.game.util.TickRegister;\r\nimport org.jetbrains.annotations.NotNull;\r\n\r\nimport java.awt.event.KeyEvent;\r\nimport java.util.ArrayList;\r\nimport java.util.HashMap;\r\nimport java.util.List;\r\n\r\npublic class Map implements ITickEvent {\r\n    /**\r\n     * Map Size for Width and Height.\r\n     * @See onMapRect\r\n     */\r\n    public static final int Map_Size=101;\r\n\r\n//    private java.util.Map<ChunkPos, Chunk> ChunkMap=new HashMap<ChunkPos,Chunk>();\r\n\r\n    private java.util.Map<onMapBlockPos, onMapBlock> BlockMap=new HashMap<>();\r\n\r\n    public Display display;\r\n\r\n    public KeyInput keyInput;\r\n\r\n    public Map(Display display, KeyInput keyInput, TickRegister tickRegister){\r\n        this.display=display;\r\n//        generator.generateChunk(new ChunkPos(0,0));\r\n        BlockMap=generator.genMap();\r\n        this.keyInput=keyInput;\r\n        tickRegister.add(this);\r\n    }\r\n\r\n    public List<BlockDrawable> getAll(){\r\n        List<BlockDrawable> drawables=new ArrayList<>();\r\n        for(onMapBlock block:BlockMap.values()){\r\n            drawables.add(block.getDrawable());\r\n        }\r\n        GameMain.logger.debug(\"[Map]BlockListSize is \"+drawables.size());\r\n        return drawables;\r\n    }\r\n\r\n    public int shift_x;\r\n    public int shift_y;\r\n\r\n    public boolean isShowing(@NotNull onMapBlock block, Display display){\r\n        return this.isShowing(block.pos,display);\r\n    }\r\n\r\n    public boolean isShowing(@NotNull onMapBlockPos pos, Display display) {\r\n        return getShowingRect(display).isContain(pos.getRect());\r\n    }\r\n\r\n    public Rect getShowingRect(Display display){\r\n        Rect rect=new Rect(-shift_x,-shift_y,-shift_x+display.getWidth(),-shift_y+display.getHeight());\r\n        GameMain.logger.low_level_debug(\"[Map]ShowingRect:\"+rect.toString());\r\n        return rect;\r\n    }\r\n\r\n//    @Deprecated\r\n//    public Chunk getChunk(ChunkPos pos){\r\n//        if (!ChunkMap.containsKey(pos)) {\r\n//            generator.generateChunk(pos);\r\n//        }\r\n//        return ChunkMap.get(pos);\r\n//    }\r\n\r\n\r\n    public generator generator=new generator();\r\n\r\n    @Override\r\n    public void onTick() {\r\n        GameMain.logger.low_level_debug(\"[Map]onTick\");\r\n        if (keyInput.getKey(KeyEvent.VK_UP)){\r\n            GameMain.logger.debug(\"[Map]KeyInput:UP\");\r\n            shift_y--;\r\n        }\r\n        if (keyInput.getKey(KeyEvent.VK_DOWN)){\r\n            GameMain.logger.debug(\"[Map]KeyInput:DOWN\");\r\n            shift_y++;\r\n        }\r\n        if (keyInput.getKey(KeyEvent.VK_LEFT)){\r\n            GameMain.logger.debug(\"[Map]KeyInput:LEFT\");\r\n            shift_x--;\r\n        }\r\n        if (keyInput.getKey(KeyEvent.VK_RIGHT)){\r\n            GameMain.logger.debug(\"[Map]KeyInput:RIGHT\");\r\n            shift_x++;\r\n        }\r\n    }\r\n\r\n    public class generator{\r\n        private generator(){}\r\n\r\n        public List<IGenerator> generatorList=new ArrayList<>();\r\n\r\n//        @Deprecated\r\n//        public Chunk generateChunk(ChunkPos pos){\r\n//            Chunk chunk=new Chunk(pos,Map.this);\r\n//            for(IGenerator generator:generatorList){\r\n//                chunk = generator.gen(chunk);\r\n//            }\r\n//            return chunk;\r\n//        }\r\n\r\n        public java.util.Map<onMapBlockPos, onMapBlock> genMap(){\r\n            java.util.Map<onMapBlockPos, onMapBlock> block_list = new HashMap<>();\r\n\r\n            onMapRect rect=new onMapRect(new onMapBlockPos(1,1, Map.this),new onMapBlockPos(Map.Map_Size, Map.Map_Size, Map.this));\r\n\r\n            for(onMapBlockPos pos:rect.getAll(Map.this)){\r\n                block_list.put(pos,new onMapBlock(Blocks.TEST_BLOCK,pos, Map.this));\r\n            }\r\n\r\n            GameMain.logger.debug(\"[MapGenerator]GeneratedMapBlocks Size is \"+block_list.size());\r\n            return block_list;\r\n        }\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/src/main/java/com/ndsl/bun133/game/map/Map.java	(revision 3cc305fa402d97b47502c3cbcef9d688b86b6793)
++++ src/src/main/java/com/ndsl/bun133/game/map/Map.java	(date 1591694515465)
+@@ -83,19 +83,19 @@
+     public void onTick() {
+         GameMain.logger.low_level_debug("[Map]onTick");
+         if (keyInput.getKey(KeyEvent.VK_UP)){
+-            GameMain.logger.debug("[Map]KeyInput:UP");
++            GameMain.logger.low_level_debug("[Map]KeyInput:UP");
+             shift_y--;
+         }
+         if (keyInput.getKey(KeyEvent.VK_DOWN)){
+-            GameMain.logger.debug("[Map]KeyInput:DOWN");
++            GameMain.logger.low_level_debug("[Map]KeyInput:DOWN");
+             shift_y++;
+         }
+         if (keyInput.getKey(KeyEvent.VK_LEFT)){
+-            GameMain.logger.debug("[Map]KeyInput:LEFT");
++            GameMain.logger.low_level_debug("[Map]KeyInput:LEFT");
+             shift_x--;
+         }
+         if (keyInput.getKey(KeyEvent.VK_RIGHT)){
+-            GameMain.logger.debug("[Map]KeyInput:RIGHT");
++            GameMain.logger.low_level_debug("[Map]KeyInput:RIGHT");
+             shift_x++;
+         }
+     }
+Index: src/src/main/java/com/ndsl/bun133/game/map/gen/IGenerator.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.ndsl.bun133.game.map.gen;\r\n\r\nimport com.ndsl.bun133.game.map.chunk.Chunk;\r\n\r\npublic interface IGenerator {\r\n    Chunk gen(Chunk chunk);\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/src/main/java/com/ndsl/bun133/game/map/gen/IGenerator.java	(revision 3cc305fa402d97b47502c3cbcef9d688b86b6793)
++++ src/src/main/java/com/ndsl/bun133/game/map/gen/IGenerator.java	(date 1592661375303)
+@@ -1,7 +1,7 @@
+ package com.ndsl.bun133.game.map.gen;
+ 
+-import com.ndsl.bun133.game.map.chunk.Chunk;
++import com.ndsl.bun133.game.map.Map;
+ 
+ public interface IGenerator {
+-    Chunk gen(Chunk chunk);
++    Map gen(Map chunk);
+ }
