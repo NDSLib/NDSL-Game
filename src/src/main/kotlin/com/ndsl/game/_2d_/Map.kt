@@ -1,4 +1,5 @@
 package com.ndsl.game._2d_
+import com.ndsl.game._2d_.test.TestBlock
 
 /**
  * Map Class
@@ -6,26 +7,31 @@ package com.ndsl.game._2d_
  * so Entity is not tell able.
  */
 class Map {
-    var BlockMap: MutableMap<Location, onMapBlock> = mutableMapOf()
-    fun getBlock(loc: Location): onMapBlock? {
-        return BlockMap[loc]
+    private var BlockMap: MutableMap<Location, onMapBlock> = mutableMapOf()
+    fun getBlock(loc: Location): onMapBlock {
+        return if(BlockMap[loc]!=null){
+            BlockMap[loc]!!
+        }else{
+            genBlock(loc)
+        }
+    }
+
+    private fun genBlock(loc: Location): onMapBlock {
+        BlockMap[loc] = onMapBlock(TestBlock,loc)
+        return BlockMap[loc]!!
     }
 
     fun setBlock(loc: Location, block: onMapBlock) {
         BlockMap[loc] = block
     }
+
+    fun getBlocksStream()= BlockMap.entries.stream()
 }
 
-abstract class Location {
-    abstract fun getMap(): Map
-    abstract fun getX(): Int
-    abstract fun getY(): Int
+class Location(var map:Map,var x:Int,var y:Int) {
 }
 
-abstract class EntityLocation {
-    abstract fun getMap(): Map
-    abstract fun getX(): Float
-    abstract fun getY(): Float
+class EntityLocation(var map:Map,var x:Float,var y:Float) {
 }
 
 @Suppress("ClassName", "SpellCheckingInspection")
@@ -79,7 +85,12 @@ class Server(var map: Map, var server: MapServer) {
         return map
     }
 
-    var listeners:MutableList<ServerListener> = mutableListOf()
+    fun leave(player:Player){
+        playerList.remove(player)
+        listeners.stream().filter { it!=null }.forEach { it.onLeave(PlayerLeaveEvent(this,player)) }
+    }
+
+    private var listeners:MutableList<ServerListener> = mutableListOf()
 
     fun register(listener: ServerListener){
         listeners.add(listener)
@@ -89,4 +100,14 @@ class Server(var map: Map, var server: MapServer) {
 interface ServerListener {
     fun onJoin(e: PlayerJoinEvent)
     fun onLeave(e: PlayerLeaveEvent)
+}
+
+class testListener : ServerListener{
+    override fun onJoin(e: PlayerJoinEvent) {
+        println("Player:"+e.player+" joined!")
+    }
+
+    override fun onLeave(e: PlayerLeaveEvent) {
+        println("Player:"+e.player+" left!")
+    }
 }

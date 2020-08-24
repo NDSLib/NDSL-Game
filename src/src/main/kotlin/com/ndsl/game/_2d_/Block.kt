@@ -2,7 +2,7 @@ package com.ndsl.game._2d_
 
 import com.ndsl.graphics.pos.Rect
 import java.awt.Graphics
-import java.awt.Image
+import java.awt.image.BufferedImage
 
 abstract class Block{
     abstract fun hasCollision(): Boolean
@@ -14,7 +14,7 @@ abstract class BlockBase(val StrengthMax:Long):Block(){
     override fun getMaxStrength(): Long = StrengthMax
 }
 
-class ImageBlock(var img: Image,var isCollide:Boolean=false,strength:Long):BlockBase(strength) {
+class ImageBlock(var img: BufferedImage,var isCollide:Boolean=false,strength:Long):BlockBase(strength) {
     override fun hasCollision(): Boolean = isCollide
     override fun onDraw(g: Graphics, rect: Rect) {
         g.drawImage(img,rect.left_up.x,rect.left_up.y,rect.width,rect.height,null)
