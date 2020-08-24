@@ -9,9 +9,8 @@ import com.ndsl.bun133.game.register.Blocks;
 import com.ndsl.bun133.game.util.ITickEvent;
 import com.ndsl.bun133.game.util.TickRegister;
 import com.ndsl.graphics.display.Display;
-import com.ndsl.graphics.display.drawable.GUIBase;
-import com.ndsl.graphics.display.drawable.RealTimeDrawable;
-import com.ndsl.graphics.display.drawable.StringGui;
+import com.ndsl.graphics.display.drawable.base.Drawable;
+import com.ndsl.graphics.display.drawable.synced.SyncedStringDrawable;
 import com.ndsl.graphics.display.key.KeyInputHandler;
 import com.ndsl.graphics.pos.Pos;
 import com.ndsl.graphics.pos.Rect;
@@ -35,36 +34,23 @@ public class Map implements ITickEvent {
 
     private java.util.Map<onMapBlockPos, onMapBlock> BlockMap=new HashMap<>();
 
-    public Display display;
-
     public KeyInputHandler keyInput;
 
     public String map_name;
 
     public Map(Display display, TickRegister tickRegister,String map_name){
-        this.display=display;
-//        generator.generateChunk(new ChunkPos(0,0));
         BlockMap=generator.genMap();
         this.keyInput=display.keyHandler;
         tickRegister.add(this);
         this.map_name=map_name;
     }
 
-    @Deprecated
     public List<BlockDrawable> getAll(){
         List<BlockDrawable> drawables=new ArrayList<>();
         for(onMapBlock block:BlockMap.values()){
             drawables.add(block.getDrawable());
         }
         logger.debug("[Map]BlockListSize is "+drawables.size());
-        return drawables;
-    }
-
-    public List<RealTimeDrawable> getAllDrawables(){
-        List<RealTimeDrawable> drawables = new ArrayList<>();
-        for(BlockDrawable block:getAll()){
-            drawables.add(new RealTimeDrawable(block,genIDForBlock(block)));
-        }
         return drawables;
     }
 
@@ -89,15 +75,6 @@ public class Map implements ITickEvent {
         return rect;
     }
 
-//    @Deprecated
-//    public Chunk getChunk(ChunkPos pos){
-//        if (!ChunkMap.containsKey(pos)) {
-//            generator.generateChunk(pos);
-//        }
-//        return ChunkMap.get(pos);
-//    }
-
-
     public generator generator=new generator();
 
     @Override
@@ -120,41 +97,34 @@ public class Map implements ITickEvent {
             shift_x++;
         }
     }
-
+    SyncedStringDrawable debug_string=new SyncedStringDrawable(this.toString(),new Rect(10,320,300,320),"Map_Debug");
+    boolean isAdded=false;
     public void setDebug(Display main_display) {
-        main_display.addGui(genDebugGUI());
-    }
-
-    public class generator{
-        private generator(){}
-
-        public List<IGenerator> generatorList=new ArrayList<>();
-
-//        @Deprecated
-//        public Chunk generateChunk(ChunkPos pos){
-//            Chunk chunk=new Chunk(pos,Map.this);
-//            for(IGenerator generator:generatorList){
-//                chunk = generator.gen(chunk);
-//            }
-//            return chunk;
-//        }
-
-        public java.util.Map<onMapBlockPos, onMapBlock> genMap(){
-            java.util.Map<onMapBlockPos, onMapBlock> block_list = new HashMap<>();
-
-            onMapRect rect=new onMapRect(new onMapBlockPos(1,1, Map.this),new onMapBlockPos(Map.Map_Size, Map.Map_Size, Map.this));
-
-            for(onMapBlockPos pos:rect.getAll(Map.this)){
-                block_list.put(pos,new onMapBlock(Blocks.TEST_BLOCK,pos, Map.this));
-            }
-
-            logger.debug("[MapGenerator]GeneratedMapBlocks Size is "+block_list.size());
-            return block_list;
+        debug_string.setText(this.toString());
+        if(!isAdded) {
+            main_display.layerManager.get("block_layer").add(new Drawable(debug_string));
+            isAdded=true;
         }
     }
 
-    public GUIBase genDebugGUI(){
-        return new GUIBase(new StringGui(this.toString()),new Pos(10,320),"Map_Debug");
+    public class generator {
+        private generator() {
+        }
+
+        public List<IGenerator> generatorList = new ArrayList<>();
+
+        public java.util.Map<onMapBlockPos, onMapBlock> genMap() {
+            java.util.Map<onMapBlockPos, onMapBlock> block_list = new HashMap<>();
+
+            onMapRect rect = new onMapRect(new onMapBlockPos(1, 1, Map.this), new onMapBlockPos(Map.Map_Size, Map.Map_Size, Map.this));
+
+            for (onMapBlockPos pos : rect.getAll(Map.this)) {
+                block_list.put(pos, new onMapBlock(Blocks.TEST_BLOCK, pos, Map.this));
+            }
+
+            logger.debug("[MapGenerator]GeneratedMapBlocks Size is " + block_list.size());
+            return block_list;
+        }
     }
 
     @Override

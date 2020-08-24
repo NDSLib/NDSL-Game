@@ -1,6 +1,6 @@
 package com.ndsl.bun133.game.map.block.status;
 
-import com.ndsl.bun133.game.map.block.animator.Animator;
+import com.ndsl.bun133.game.map.block.animator.BlockAnimator;
 import com.ndsl.bun133.game.map.block.onMapBlock;
 
 public class BlockStatus {
@@ -8,15 +8,14 @@ public class BlockStatus {
 
     public BlockStatus(onMapBlock block){
         this.Block=block;
-        this.animator=new Animator(block.block.BlockImage,this);
+        this.animator=new BlockAnimator(this,block.block.BlockImage);
     }
-
 
     public NBT nbt=new NBT();
 
-    public Animator animator;
+    public BlockAnimator animator;
 
-    public Animator getAnimator(){
+    public BlockAnimator getAnimator(){
         return animator;
     }
 }

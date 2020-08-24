@@ -1,12 +1,12 @@
 package com.ndsl.bun133.game.map.block;
 
-import java.awt.*;
+import com.ndsl.graphics.display.drawable.img.GImage;
 
 public class Block {
     public String BlockID;
-    public Image BlockImage;
+    public GImage BlockImage;
 
-    public Block(String id, Image image){
+    public Block(String id, GImage image){
         this.BlockID=id;
         this.BlockImage=image;
     }

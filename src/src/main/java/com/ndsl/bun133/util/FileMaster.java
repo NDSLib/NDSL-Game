@@ -1,6 +1,7 @@
 package com.ndsl.bun133.util;
 
 import com.ndsl.bun133.game.GameMain;
+import com.ndsl.graphics.display.drawable.img.GImage;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -17,6 +18,10 @@ public class FileMaster {
 
     public static Image getImage(String path){
         return getImage(new File(path));
+    }
+
+    public static GImage getGImage(String path) throws IOException {
+        return GImage.get(new File(path));
     }
 
     public static Image getImage(File file){
@@ -44,13 +49,22 @@ public class FileMaster {
         return new File(path).exists();
     }
 
-    public static Image get(String key, String filename){
+    public static GImage get(String key, String filename){
         if(isRepoExist(key)){
-            return getImage(repoMap.get(key)+"\\"+filename);
+            try {
+                return getGImage(repoMap.get(key)+"\\"+filename);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }else{
             GameMain.logger.warn("[FileMaster]Not Repo Found:"+key);
-            return getImage(filename);
+            try {
+                return getGImage(filename);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+        return null;
     }
 
     public static void addRepo(String key, String folderName){
